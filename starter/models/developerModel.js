@@ -1,32 +1,33 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-// const validator = require('validator');
 
-const tourSchema = new mongoose.Schema(
+const developerSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'A tour must have a name'],
+      required: [true, 'A Developer must have a name'],
       unique: true,
-      maxLength: [40, 'A tour name must have less or equal than 40 characters'],
-      minLength: [10, 'A tour name must have more than 10 characters'],
-      // validate: [validator.isAlpha, 'Tour name must only contain characters'],
+      maxLength: [
+        40,
+        'A Developer name must have less or equal than 40 characters',
+      ],
+      minLength: [10, 'A Developer name must have more than 10 characters'],
     },
     slug: String,
-    duration: {
+    yearsOfExperience: {
       type: Number,
-      required: [true, 'A tour must have a duration'],
+      required: [true, 'A Developer must have years of experience listed'],
     },
-    maxGroupSize: {
+    maxTeamSize: {
       type: Number,
-      required: [true, 'Tour must have a group size'],
+      required: [true, 'Developer must have a team size'],
     },
-    difficulty: {
+    experienceLevel: {
       type: String,
-      required: [true, 'Difficulty is required'],
+      required: [true, 'Experience level is required'],
       enum: {
-        values: ['easy', 'medium', 'difficult'],
-        message: 'Difficulty is either: easy, medium, or difficult',
+        values: ['novice', 'proficient', 'expert'],
+        message: 'Experience level is either: novice, proficient, or expert',
       },
     },
     ratingsAverage: {
@@ -39,9 +40,9 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    price: {
+    hourlyRate: {
       type: Number,
-      required: [true, 'A tour must have a price'],
+      required: [true, 'A Developer must have an hourly rate'],
     },
     priceDiscount: {
       type: Number,
@@ -56,15 +57,15 @@ const tourSchema = new mongoose.Schema(
     summary: {
       type: String,
       trim: true,
-      required: [true, 'Tour must have a description'],
+      required: [true, 'Developer must have a summary'],
     },
     description: {
       type: String,
       trim: true,
     },
-    imageCover: {
+    profilePhoto: {
       type: String,
-      required: [true, 'A tour must have a cover image'],
+      required: [true, 'A developer must have a profile photo'],
     },
     images: [String],
     createdAt: {
@@ -85,37 +86,26 @@ const tourSchema = new mongoose.Schema(
 );
 
 //Cannot use arrow function when want to reference 'this'
-tourSchema.virtual('durationWeeks').get(function () {
-  return this.duration / 7;
+developerSchema.virtual('durationWeeks').get(function () {
+  return this.yearsOfExperience / 7;
 });
 
 //DOCUMENT MIDDLEWARE: runs before .save command and .create command
 //'this'points to current document object
-tourSchema.pre('save', function (next) {
+developerSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
-// tourSchema.pre('save', (next) => {
-//   console.log('Will Save document...');
-//   next();
-// });
-
-// tourSchema.post('save', (doc, next) => {
-//   console.log(doc);
-//   next();
-// });
-
 //QUERY MIDDLEWARE
 //'this'points to current query object
-tourSchema.pre(/^find/, function (next) {
-  // tourSchema.pre('find', function (next) {
+developerSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
   next();
 });
 
-// tourSchema.post(/^find/, function (docs, next) {
+// developerSchema.post(/^find/, function (docs, next) {
 //   console.log(`Query took ${Date.now() - this.start} milliseconds`);
 //   console.log(docs);
 //   next();
@@ -123,12 +113,11 @@ tourSchema.pre(/^find/, function (next) {
 
 //AGGREGATION MIDDLEWARE
 //'this'points to aggregate object
-tourSchema.pre('aggregate', function (next) {
+developerSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  console.log(this.pipeline());
   next();
 });
 
-const Tour = mongoose.model('Tour', tourSchema);
+const Developer = mongoose.model('Developer', developerSchema);
 
-module.exports = Tour;
+module.exports = Developer;
