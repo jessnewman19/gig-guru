@@ -32,19 +32,6 @@ exports.getAllDevelopers = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.getAllDevelopers = async (req, res) => {
-//   const developers = await Developer.find();
-//   //SEND RESPONSE
-//   res.status(200).json({
-//     status: 'success',
-//     requestedAt: req.requestTime,
-//     results: developers.length,
-//     data: {
-//       developers,
-//     },
-//   });
-// };
-
 exports.getDeveloper = catchAsync(async (req, res, next) => {
   const developer = await Developer.findById(req.params.id);
   //findById is shorthand for: Developer.findOne({_id: req.params.id})
