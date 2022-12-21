@@ -11,7 +11,7 @@ const developerSchema = new mongoose.Schema(
         40,
         'A Developer name must have less or equal than 40 characters',
       ],
-      minLength: [10, 'A Developer name must have more than 10 characters'],
+      minLength: [5, 'A Developer name must have more than 10 characters'],
     },
     slug: String,
     yearsOfExperience: {
@@ -26,8 +26,8 @@ const developerSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Experience level is required'],
       enum: {
-        values: ['novice', 'proficient', 'expert'],
-        message: 'Experience level is either: novice, proficient, or expert',
+        values: ['Novice', 'Proficient', 'Expert'],
+        message: 'Experience level is either: Novice, Proficient, or Expert',
       },
     },
     ratingsAverage: {

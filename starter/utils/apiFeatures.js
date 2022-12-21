@@ -1,5 +1,6 @@
 class APIFeatures {
   constructor(query, queryString) {
+    console.log(queryString);
     this.query = query;
     this.queryString = queryString;
   }
